@@ -3,14 +3,14 @@
 
 /***
  *
- * Monitoring plugin to check the status of nextcloud security scan for a given URL
+ * Monitoring plugin to check the status of nextcloud security scan for a given hostname + URI
  *
  * Copyright (c) 2017 Jan Vonde <mail@jan-von.de>
  *
  *
- * Usage: /usr/bin/php ./check_nextcloud.php -u cloud.example.com
+ * Usage: /usr/bin/php ./check_nextcloud.php -H cloud.example.com -u /owncloud
  *
- * 
+ *
  * Don't run this check too often. You could run into an API limit on the
  * nextcloud scan server. Once a day is good.
  *
@@ -24,22 +24,23 @@
 
 
 // get commands passed as arguments
-$options = getopt("u:");
+$options = getopt("H:u:");
 if (!is_array($options) ) {
   print "There was a problem reading the passed option.\n\n";
   exit(1);
 }
 
-if (count($options) != "1") {
-  print "check_nextcloud.php - Monitoring plugin to check the status of nextcloud security scan for a given URL.\n
+if (count($options) != "2") {
+  print "check_nextcloud.php - Monitoring plugin to check the status of nextcloud security scan for a given hostname + URI.\n
 You need to specify the following parameters:
-  -u:  url to the nextcloud instance, for example cloud.example.com  \n\n";
+  -H:  hostname of the nextcloud instance, for example cloud.example.com
+  -u:  uri of the nextcloud instance, for example / or /owncloud  \n\n";
   exit(2);
 }
 
-$ncurl = trim($options['u']);
-
-
+$nchost = trim($options['H']);
+$ncuri = trim($options['u']);
+$ncurl = $nchost . $ncuri;
 
 // get UUID from scan.nextcloud.com service
 $url = 'https://scan.nextcloud.com/api/queue';
@@ -78,7 +79,7 @@ if (strtotime($uuidresult['scannedAt']['date']) <= strtotime('-24 hours')) {
   // use the same parameters from queue call, just change url
   $url = 'https://scan.nextcloud.com/api/requeue';
   $result = json_decode(file_get_contents($url, false, $postcontext), true);
-} 
+}
 
 
 
