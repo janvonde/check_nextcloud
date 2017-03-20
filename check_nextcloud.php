@@ -8,7 +8,7 @@
  * Copyright (c) 2017 Jan Vonde <mail@jan-von.de>
  *
  *
- * Usage: /usr/bin/php ./check_nextcloud.php -H cloud.example.com -u /owncloud
+ * Usage: /usr/bin/php ./check_nextcloud.php -H cloud.example.com -u /nextcloud
  *
  *
  * Don't run this check too often. You could run into an API limit on the
@@ -34,7 +34,7 @@ if (count($options) != "2") {
   print "check_nextcloud.php - Monitoring plugin to check the status of nextcloud security scan for a given hostname + URI.\n
 You need to specify the following parameters:
   -H:  hostname of the nextcloud instance, for example cloud.example.com
-  -u:  uri of the nextcloud instance, for example / or /owncloud  \n\n";
+  -u:  uri of the nextcloud instance, for example / or /nextcloud  \n\n";
   exit(2);
 }
 
