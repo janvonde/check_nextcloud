@@ -8,11 +8,11 @@ type: Plugin
 license: gplv3
 releases: 
   - 
-    name: 1.0
-    description: "1.0 Release"
+    name: 1.1
+    description: "1.1 Release"
     files: 
       - 
         name: check_nextcloud.php
         url: "file:///check_nextcloud.php"
-        description: "initial release"
-        checksum: f3e7defe19418f51ba1d493247396025
+        description: "1.1 release"
+        checksum: 591a3bd08d86a8ac3270a66eef6df07f

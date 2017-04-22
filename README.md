@@ -8,7 +8,7 @@ This is a monitoring plugin for [icinga](https://www.icinga.com) to check the st
 ### Usage
 Try the plugin at the command line like this:
 ```
-/usr/bin/php ./check_nextcloud.php -u cloud.example.com
+/usr/bin/php ./check_nextcloud.php -H cloud.example.com -u /
 ```
 
 You can define the icinga2 check command as follows:
@@ -19,11 +19,17 @@ object CheckCommand "nextcloud" {
   command = [ LocalPluginDir + "/check_nextcloud.php" ]
 
   arguments = {
+    "-H" = {
+      "required" = true
+      "value" = "$nc_host$"
+    }
     "-u" = {
       "required" = true
       "value" = "$nc_url$"
     }
   }
+
+  vars.nc_url = "/"
 }
 ```
 
@@ -45,7 +51,13 @@ apply Service "nextcloud-" for (instance => config in host.vars.nextcloud) {
 
 
 ### Changelog
-* 2017-03-18: initial version
+* 2017-03-22: split hostname and url into separate parameters (sumnerboy12)
+* 2017-03-18: initial version (janvonde)
+
+
+### Authors
+* [Jan Vonde](https://github.com/janvonde)
+* [Ben Jones](https://github.com/sumnerboy12)
 
 
 ### License
