@@ -53,7 +53,12 @@ $options = array(
   )
 );
 $postcontext  = stream_context_create($options);
-$result = json_decode(file_get_contents($url, false, $postcontext), true);
+$answer = @file_get_contents($url, false, $postcontext);
+if ($answer === FALSE) {
+  echo "WARNING: Could not get get UUID for given host $ncurl. Aborting. \n";
+  exit (1);
+}
+$result = json_decode($answer, true);
 $uuid = $result['uuid'];
 
 
