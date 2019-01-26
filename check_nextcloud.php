@@ -8,7 +8,7 @@
  * Copyright (c) 2017 Jan Vonde <mail@jan-von.de>
  *
  *
- * Usage: /usr/bin/php ./check_nextcloud.php -H cloud.example.com -u /nextcloud
+ * Usage: /usr/bin/php ./check_nextcloud.php -H cloud.example.com -u /nextcloud -z "Europe/Berlin"
  *
  *
  * Don't run this check too often. You could run into an API limit on the
@@ -17,6 +17,9 @@
  *
  * For more information visit https://github.com/janvonde/check_nextcloud
  *
+ * Changelog
+ * 2019-01-26 Christian Wirtz <doc@snowheaven.de>, Added timezone handling
+ *
  ***/
 
 
@@ -24,23 +27,28 @@
 
 
 // get commands passed as arguments
-$options = getopt("H:u:");
+$options = getopt("H:u:z:");
 if (!is_array($options) ) {
   print "There was a problem reading the passed option.\n\n";
   exit(1);
 }
 
-if (count($options) != "2") {
+if (count($options) < "2") {
   print "check_nextcloud.php - Monitoring plugin to check the status of nextcloud security scan for a given hostname + URI.\n
 You need to specify the following parameters:
   -H:  hostname of the nextcloud instance, for example cloud.example.com
-  -u:  uri of the nextcloud instance, for example / or /nextcloud  \n\n";
+  -u:  uri of the nextcloud instance, for example / or /nextcloud
+  -z:  timezone of the nextcloud instance, for example Europe/Berlin  \n\n";
   exit(2);
 }
 
 $nchost = trim($options['H']);
 $ncuri = trim($options['u']);
 $ncurl = $nchost . $ncuri;
+$nctz = trim($options['z']);
+
+if ($nctz != '') { date_default_timezone_set("$nctz"); }
+else { date_default_timezone_set("Europe/Berlin"); }
 
 // get UUID from scan.nextcloud.com service
 $url = 'https://scan.nextcloud.com/api/queue';
