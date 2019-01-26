@@ -33,7 +33,7 @@ if (!is_array($options) ) {
   exit(1);
 }
 
-if (count($options) < "2") {
+if (count($options) != "3") {
   print "check_nextcloud.php - Monitoring plugin to check the status of nextcloud security scan for a given hostname + URI.\n
 You need to specify the following parameters:
   -H:  hostname of the nextcloud instance, for example cloud.example.com
@@ -47,8 +47,7 @@ $ncuri = trim($options['u']);
 $ncurl = $nchost . $ncuri;
 $nctz = trim($options['z']);
 
-if ($nctz != '') { date_default_timezone_set("$nctz"); }
-else { date_default_timezone_set("Europe/Berlin"); }
+date_default_timezone_set("$nctz");
 
 // get UUID from scan.nextcloud.com service
 $url = 'https://scan.nextcloud.com/api/queue';
