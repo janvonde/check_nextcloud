@@ -33,7 +33,7 @@ object CheckCommand "nextcloud" {
     }
   }
 
-  vars.nc_url = "/nc"
+  vars.nc_url = "/"
   vars.nc_tz = "Europe/Berlin"
 }
 ```
