@@ -27,9 +27,14 @@ object CheckCommand "nextcloud" {
       "required" = true
       "value" = "$nc_url$"
     }
+    "-z" = {
+      "required" = true
+      "value" = "$nc_tz$"
+    }
   }
 
-  vars.nc_url = "/"
+  vars.nc_url = "/nc"
+  vars.nc_tz = "Europe/Berlin"
 }
 ```
 
@@ -49,8 +54,19 @@ apply Service "nextcloud-" for (instance => config in host.vars.nextcloud) {
 }
 ```
 
+An example for a host configuration:
+```
+object Host "cloud.example.com" {
+  import "generic-host"
+  
+  vars.nextcloud["cloud.example.com"] = {
+    nc_host = "cloud.example.com"
+  }
+}
+```
 
 ### Changelog
+* 2020-08-31: updated readme.md to most recent changes (Decstasy)
 * 2017-03-22: split hostname and url into separate parameters (sumnerboy12)
 * 2017-03-18: initial version (janvonde)
 
