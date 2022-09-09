@@ -8,15 +8,17 @@ This is a monitoring plugin for [icinga](https://www.icinga.com) to check the st
 ### Usage
 Try the plugin at the command line like this:
 ```
-/usr/bin/php ./check_nextcloud.php -H cloud.example.com -u /
+/usr/bin/php ./check_nextcloud.php -H cloud.example.com -u / -z UTC
 ```
+
+Optional: Define the `LocalPluginDir` constant in `/etc/icinga2/constants.conf` to point to the place where you have placed the `check_nextcloud.php` file. Or you can use the default `PluginDir` already defined in `/etc/icinga2/constants.conf`. See https://icinga.com/docs/icinga-2/latest/doc/05-service-monitoring/#optional-custom-path .
 
 You can define the icinga2 check command as follows:
 ```
 /* Define check command for check_nextcloud */
 object CheckCommand "nextcloud" {
   import "plugin-check-command"
-  command = [ LocalPluginDir + "/check_nextcloud.php" ]
+  command = [ "/usr/bin/php", LocalPluginDir + "/check_nextcloud.php" ]
 
   arguments = {
     "-H" = {
@@ -27,11 +29,19 @@ object CheckCommand "nextcloud" {
       "required" = true
       "value" = "$nc_url$"
     }
+    "-z" = {
+      "required" = true
+      "value" = "$nc_timezone$"
+    }
   }
 
+  // default values, can be overridden in each host
   vars.nc_url = "/"
+  vars.nc_timezone = "UTC"
 }
 ```
+
+For possible timezone values, see PHP docs: https://www.php.net/manual/en/function.date-default-timezone-set.php , https://www.php.net/manual/en/timezones.php .
 
 Please don't run this check too often. There is an API limit at the scan.nextcloud.com server at the /api/queue endpoint with arround 250 POST requests a day. I personally run it every 24h:
 ```
@@ -49,6 +59,17 @@ apply Service "nextcloud-" for (instance => config in host.vars.nextcloud) {
 }
 ```
 
+Finally you can use this in a particular host and configure the parameters per-host:
+```
+object Host ... {
+  ...
+  vars.nextcloud["mynextcloud"] = {
+    nc_host = "cloud.example.com"
+    // nc_url = "/" // these are already default, uncomment and customize if necessary
+    // nc_timezone = "UTC" // these are already default, uncomment and customize if necessary
+  }
+}
+```
 
 ### Changelog
 * 2017-03-22: split hostname and url into separate parameters (sumnerboy12)
